@@ -8,27 +8,32 @@
 </head>
 <body>
     <div id="calculator">
-        <form>
-            <input type="text" id="display"></input>
+        <form class="display">
+            <input type="text" id="digit-display"></input>
         </form>
-        <button class="numbers" data-key="1">1</button>
-        <button class="numbers" data-key="2">2</button>
-        <button class="numbers" data-key="3">3</button>
-        <button class="numbers" data-key="4">4</button>
-        <button class="numbers" data-key="5">5</button>
-        <button class="numbers" data-key="6">6</button>
-        <button class="numbers" data-key="7">7</button>
-        <button class="numbers" data-key="8">8</button>
-        <button class="numbers" data-key="9">9</button>
-        <button class="numbers" data-key="0">0</button>
-        <button class="operators" data-key="+">+</button>
-        <button class="operators" data-key="-">-</button>
-        <button class="operators" data-key="*">x</button>
-        <button class="operators" data-key="/">÷</button>
-        <button data-key=".">.</button>
-        <button data-key="+/-">±</button>
-        <button data-key="back">&lt;</button>
-        <button data-key="=">=</button>
+
+        <button class="number one" data-value="1">1</button>
+        <button class="number two" data-value="2">2</button>
+        <button class="number three" data-value="3">3</button>
+        <button class="number four" data-value="4">4</button>
+        <button class="number five" data-value="5">5</button>
+        <button class="number six" data-value="6">6</button>
+        <button class="number seven" data-value="7">7</button>
+        <button class="number eight" data-value="8">8</button>
+        <button class="number nine" data-value="9">9</button>
+        <button class="number zero" data-value="0">0</button>
+
+        <div id="operations">
+            <button class="operator" data-value="+">+</button>
+            <button class="operator" data-value="-">-</button>
+            <button class="operator" data-value="*">x</button>
+            <button class="operator" data-value="/">÷</button>
+        </div>
+
+        <button class="decimal" data-value=".">.</button>
+        <button class="change-sign" data-value="+/-">±</button>
+        <button class="undo" data-value="back">&lt;</button>
+        <button class="enter" data-value="=">=</button>
    </div>
 
    <script src="calculator.js"></script>
