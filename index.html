@@ -9,7 +9,7 @@
 <body>
     <div id="calculator">
         <form class="display">
-            <input type="text" id="digit-display"></input>
+            <input type="text" id="expression-display" autocomplete="off"></input>
         </form>
 
         <button class="number one" data-value="1">1</button>
@@ -31,9 +31,9 @@
         </div>
 
         <button class="decimal" data-value=".">.</button>
-        <button class="change-sign" data-value="+/-">±</button>
-        <button class="undo" data-value="back">&lt;</button>
-        <button class="enter" data-value="=">=</button>
+        <button class="change-sign" data-value="*(-1)">±</button>
+        <button class="undo">&lt;</button>
+        <button class="enter">=</button>
    </div>
 
    <script src="calculator.js"></script>
