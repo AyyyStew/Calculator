@@ -27,33 +27,129 @@ function getLeafNodes(master) {
     return results;
 }
 
+//event to trigger on display changes
 const input = new Event('input', {
     bubbles: true,
     cancelable: true,
 })
 
-const calculator = document.getElementById("calculator")
+const calculatorContainer = document.getElementById("calculator")
+//get all buttons of the calculator
+const keypad = getLeafNodes(calculatorContainer)
+
+//calculator object
+let calculator = {
+    expression: [], //used to store the expression in the form [term, operator, term, operator]
+    term: "", //used to store the last term aka the term the user is working on.
+    result : "",
+    getExpressionString(){
+      return this.expression.join("") + this.term
+    },
+    addArg(arg){
+        //check if the new thing to be added is an operator
+        if(arg === "+" || arg === "-" || arg === "*" || arg === "/"){
+            if(this.term===""){
+            //if it is an operator and term is "", this means that the previous term must be either empty
+            //or an operator. in any case we don't want double operators so replace it.
+                this.expression.pop()
+                this.expression.push(arg)
+            }else{
+                //otherwise add the current term to the expression array and add the next operator
+                this.expression.push(this.term)
+                this.term = ""
+                this.expression.push(arg)
+            }
+        } else{
+            this.term =this.term + arg
+        }
+        console.log("Expression: " + this.getExpressionString())
+
+        return this.getExpressionString()
+    },
+    back(){
+        if (this.term == ""){
+            console.log("Popping arg: " + String(this.expression.slice(-1)))
+            this.expression.pop()
+            this.term = this.expression.slice(-1)
+        } else{
+            console.log("Popping arg: " + String(this.term.slice(-1)))
+            this.term = this.term.slice(0,-1)
+        }
+
+        return this.getExpressionString()
+    },    
+    evaluate(){
+        if (this.term ==""){
+            alert("missing last value")
+        } else{
+            console.log("Evaluating: " + String(this.getExpressionString()))
+            let arr = this.expression.slice()
+            arr.push(this.term)
+
+            let total = arr[0]
+            for (let i = 1; i<arr.length; i=i+2){
+                let operator = arr[i]
+                let operand = arr[i+1]
+        
+                total = operate(total, operator, operand)
+                    
+            }
+            console.log(this.getExpressionString())
+            console.log(`${this.getExpressionString()} = ${total}`)
+            this.result = total.toFixed(.6)
+
+            return this.result
+        }
+    },
+    
+}
+
+function operate(op1, oper, op2){
+    let value = null;
+    switch(oper){
+        case "+":
+            value = Number(op1) + Number(op2)
+            break;
+
+        case "-":
+            value = op1 - op2
+            break;
+
+        case "*":
+            value = op1 * op2
+            break;
+
+        case "/":
+            if (op2 == 0){
+                value == undefined
+            }else{
+            value = op1 / op2
+            }
+            break;
+    
+    }
+    return value
+}
+
 const display = document.getElementById("expression-display")
 
-//get all buttons of the calculator
-const keypad = getLeafNodes(calculator)
-
-//create on click listeners for all button on the calculator that have a value attribute
+//create on click listeners for all buttons on the calculator that have a value attribute
 for (let key of keypad){
     if(key.dataset.value){
         key.addEventListener("click", (e) =>{
-            console.log(key.dataset.value)
-
-            //change teh value of the display
-            display.value = display.value + key.dataset.value
-            
-            //trigger event to indicate the value has changed
-            display.dispatchEvent(input)
+            console.log("Button Pressed: " + key.dataset.value)
+            display.value = calculator.addArg(key.dataset.value)
         })
     }
 }
 
-//when the display changes 
-display.addEventListener("input", (e) =>{
-    console.log(e)
+
+const enter = document.getElementsByClassName("enter")[0]
+enter.addEventListener("click", ()=>{
+    calculator.evaluate()
+})
+
+const undo = document.getElementsByClassName("undo")[0]
+undo.addEventListener("click", ()=>{
+    display.value = calculator.back()
 })
