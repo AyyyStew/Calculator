@@ -10,8 +10,9 @@
     <div id="calculator">
         <form class="display">
             <input type="text" id="expression-display" autocomplete="off"></input>
+            <!-- &nbsp is whitespace -->
+            <div id="results">&nbsp;</div> 
         </form>
-
         <button class="number one" data-value="1">1</button>
         <button class="number two" data-value="2">2</button>
         <button class="number three" data-value="3">3</button>
@@ -32,6 +33,7 @@
 
         <button class="decimal" data-value=".">.</button>
         <button class="change-sign" data-value="*(-1)">±</button>
+        <button class="clear">Clear</button>
         <button class="undo">&lt;</button>
         <button class="enter">=</button>
    </div>
