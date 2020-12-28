@@ -33,160 +33,146 @@ const input = new Event('input', {
     cancelable: true,
 })
 
+
 //calculator object
 let calculator = {
-    expression: [], //used to store the expression in the form [term, operator, term, operator]
-    term: "", //used to store the last term aka the term the user is working on.
-    result : "",
-    getExpressionString(){
-      return this.expression.join("") + this.term
-    },
-    addArg(arg){
-        //check if the new thing to be added is an operator
-        if(arg === "+" || arg === "-" || arg === "*" || arg === "/"){
-            if(this.term===""){
-                //if previous operator was the same tell user
-                if (this.expression[this.expression.length-1] === arg){
-                    alert("No double operators")
-                }
-
-                //if it is an operator and term is "", this means that the previous term must be either empty
-                //or an operator. in any case we don't want double operators so replace it.
-                this.expression.pop()
-                this.expression.push(arg)
-            }else{
-                //otherwise add the current term to the expression array and add the next operator
-                this.expression.push(this.term)
-                this.term = ""
-                this.expression.push(arg)
-            }
-        } else{
-            this.term =this.term + arg
-        }
-        console.log("Expression: " + this.getExpressionString())
-
-        return this.getExpressionString()
+    expression: "",
+    result : "", 
+    addSymbol(symbol){
+        this.expression = this.expression + symbol
+        return this.expression
     },
     back(){
-        if (this.expression.length === 0 && this.term.length === 0){
-            return ""
-        } else if (this.term == ""){
-            //if the term is empty,
-            //remove the last operator and pop the previous term into the current term
-            console.log("Popping arg: " + String(this.expression.slice(-1)))
-            this.expression.pop()
-            this.term = this.expression.pop()
-        } else{
-            console.log("Popping arg: " + String(this.term.slice(-1)))
-            this.term = this.term.slice(0,-1)
-        }
-        // this.evaluate()
-        console.log("Term: " + this.term)
-        return this.getExpressionString()
+        this.expression=this.expression.slice(0,-1)
     },    
     evaluate(){
-        //if no term is supplied prompt the user 
-        if (this.term ==""){
-            return "\xa0" //this is nbsp in html. just here so the div doesn't collapse. i know its not ecapsulate but eh
-        } else if(this.expression.length == 0){
-            //if the expression is empty, but the term is full, return the tern
-            this.result = this.term
-            return this.term
-        }else{
-            //else actually do the non pemdas math
-            console.log("Evaluating: " + String(this.getExpressionString()))
-            let arr = this.expression.slice()
-            arr.push(this.term)
-
-            let total = arr[0]
-            for (let i = 1; i<arr.length; i=i+2){
-                let operator = arr[i]
-                let operand = arr[i+1]
-        
-                total = operate(total, operator, operand)
-                    
+        function checkOperator(operator){
+            let operations = ["+","-","*","/"]
+            if (operations.includes(operator)){ 
+                return true
+            } else {
+                return false
             }
-            console.log(this.getExpressionString())
-            console.log(`${this.getExpressionString()} = ${total}`)
-            this.result = Math.round((total + Number.EPSILON)* 10000)/10000
-
-            
         }
         
-        return this.result
-    },
-    
-}
-
-function operate(op1, oper, op2){
-    let value = null;
-    switch(oper){
-        case "+":
-            value = Number(op1) + Number(op2)
-            break;
-
-        case "-":
-            value = op1 - op2
-            break;
-
-        case "*":
-            value = op1 * op2
-            break;
-
-        case "/":
-            if (op2 == 0){
-                value = undefined
-            }else{
-            value = op1 / op2
+        function chunkExpression(expression){
+            let splitExpression = []
+            let term = ""
+            for(let i of expression){
+                if (checkOperator(i)){
+                    if(i === "-" && term === ""){
+                        //if the negative is at the start of the term, don't split
+                        term = "-"
+                    }else{
+                        //split on operators
+                        splitExpression.push(term)
+                        term = ""
+                        splitExpression.push(i)
+                    }
+                } else{
+                    term = term + i
+                }
             }
-            break;
-    
+        
+            splitExpression.push(term)
+        
+            console.log(splitExpression)
+            return splitExpression
+        }
+        
+        function operate(op1, oper, op2){
+            let value = null;
+            switch(oper){
+                case "+":
+                    value = Number(op1) + Number(op2)
+                    break;
+        
+                case "-":
+                    value = op1 - op2
+                    break;
+        
+                case "*":
+                    value = op1 * op2
+                    break;
+        
+                case "/":
+                    if (op2 == 0){
+                        value = undefined
+                    }else{
+                    value = op1 / op2
+                    }
+                    break;
+            
+            }
+            return value
+        }
+
+        const chunk = chunkExpression(this.expression)
+
+        //go through each chuck and perferm operations on it
+        let total = chunk[0]
+        for(let i = 1; i< chunk.length; i=i+2){
+            if(chunk[i+1] === ""){
+                //if at any point our chunked epxression has an empty string as the operand, 
+                //we know that the user has entered too many operators
+                return "ERROR"
+            }
+
+            total = operate(total, chunk[i], chunk[i+1])
+        }
+
+        return total
+        
+    },
+    setResult(){
+        this.result = this.evaluate()
     }
-    return value
 }
 
 const display = document.getElementById("expression-display")
-const calculatorContainer = document.getElementById("calculator")
-//get all buttons of the calculator
-const keypad = getLeafNodes(calculatorContainer)
+const keypad = getLeafNodes(document.getElementById("calculator"))
+
 //create on click listeners for all buttons on the calculator that have a value attribute
 for (let key of keypad){
+    //events to add values to calculator expression
     if(key.dataset.value){
         key.addEventListener("click", (e) =>{
             console.log("Button Pressed: " + key.dataset.value)
-            display.value = calculator.addArg(key.dataset.value)
-            // display.dispatchEvent(input)
+            display.value = calculator.addSymbol(key.dataset.value)
         })
     }
+    //event to trigger display update
     key.addEventListener("click", ()=>{
     display.dispatchEvent(input)
     })
-
-
 }
 
 
 const resultsDisplay = document.getElementById("results")
 display.addEventListener("input",()=>{
-    // calculator.evaluate()
-    resultsDisplay.innerText=calculator.evaluate()
+    //anytime an input is given, calulate the expresison and put results into html
+    display.value = calculator.expression
+    resultsDisplay.innerText= calculator.evaluate()
 
 })
 
 
 const enter = document.getElementById("enter")
-const previousResult = document.getElementById("previous-result")
 enter.addEventListener("click", ()=>{
-    calculator.evaluate() //kinda useless now
+    calculator.setResult()
+    const previousResult = document.getElementById("previous-result")
     previousResult.innerText = calculator.result
 })
 
-// const clear = document.getElementById("clear"){
+const clear = document.getElementById("clear")
+clear.addEventListener('click', ()=>{
+    calculator.expression = ""
+    display.dispatchEvent(input)
+})
 
-// }
 
 const undo = document.getElementById("undo")
 undo.addEventListener("click", ()=>{
-    display.value = calculator.back()
+    calculator.back()
     display.dispatchEvent(input)
 })
