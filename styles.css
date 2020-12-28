@@ -10,24 +10,24 @@
     background-color: #ffa500;
 }
 
-.decimal{
+#decimal{
     grid-area: point;
 }
 
-.change-sign{
+#change-sign{
     grid-area: sign;
 }
 
-.undo{
+#undo{
     grid-area:  undo;
 }
 
-.enter{
+#enter{
     grid-area:  enter;
     background-color: rgb(255, 86, 64);
 }
 
-.display{
+#display{
     grid-area:  display;
 }
 
@@ -42,7 +42,7 @@
     border-bottom: 1px dashed black;
 }
 
-.display{
+#display{
     background-color: #ffffff;
     border: 1px solid gold;
     border-radius: 3px;
@@ -66,7 +66,7 @@
         ".       .       .       oper"
         ".       .       .       oper"
         "point   .       sign    oper"
-        "clear   undo    enter   enter";
+        "clr     undo    enter   enter";
 
     grid-gap: 5px 5px;
     

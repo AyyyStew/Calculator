@@ -110,7 +110,7 @@ let calculator = {
             }
             console.log(this.getExpressionString())
             console.log(`${this.getExpressionString()} = ${total}`)
-            this.result = total.toFixed(6)
+            this.result = Math.round((total + Number.EPSILON)* 10000)/10000
 
             
         }
@@ -175,12 +175,18 @@ display.addEventListener("input",()=>{
 })
 
 
-const enter = document.getElementsByClassName("enter")[0]
+const enter = document.getElementById("enter")
+const previousResult = document.getElementById("previous-result")
 enter.addEventListener("click", ()=>{
-    calculator.evaluate()
+    calculator.evaluate() //kinda useless now
+    previousResult.innerText = calculator.result
 })
 
-const undo = document.getElementsByClassName("undo")[0]
+// const clear = document.getElementById("clear"){
+
+// }
+
+const undo = document.getElementById("undo")
 undo.addEventListener("click", ()=>{
     display.value = calculator.back()
 })

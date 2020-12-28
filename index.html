@@ -8,10 +8,13 @@
 </head>
 <body>
     <div id="calculator">
-        <form class="display">
+        <form id="display">
             <input type="text" id="expression-display" autocomplete="off"></input>
             <!-- &nbsp is whitespace -->
             <div id="results">&nbsp;</div> 
+            <div id="previous">
+                Prev: <span id="previous-result"> </span>
+            </div>
         </form>
         <button class="number one" data-value="1">1</button>
         <button class="number two" data-value="2">2</button>
@@ -31,11 +34,11 @@
             <button class="operator" data-value="/">÷</button>
         </div>
 
-        <button class="decimal" data-value=".">.</button>
-        <button class="change-sign" data-value="*(-1)">±</button>
-        <button class="clear">Clear</button>
-        <button class="undo">&lt;</button>
-        <button class="enter">=</button>
+        <button id="decimal" data-value=".">.</button>
+        <button id="change-sign" data-value="*(-1)">±</button>
+        <button id="clear">Clear</button>
+        <button id="undo">&lt;</button>
+        <button id="enter">=</button>
    </div>
 
    <script src="calculator.js"></script>
