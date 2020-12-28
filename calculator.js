@@ -89,7 +89,7 @@ let calculator = {
         //if no term is supplied prompt the user 
         if (this.term ==""){
             // alert("missing last value")
-            return "\xa0"
+            return "\xa0" //this is nbsp in html. just here so the div doesn't collapse. i know its not ecapsulate but eh
         } else if(this.expression.length == 0){
             //if the expression is empty, but the term is full, return the turn
             this.result = this.term
