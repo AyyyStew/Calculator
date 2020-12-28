@@ -88,12 +88,12 @@ let calculator = {
     evaluate(){
         //if no term is supplied prompt the user 
         if (this.term ==""){
-            alert("missing last value")
-            return ""
+            // alert("missing last value")
+            return "\xa0"
         } else if(this.expression.length == 0){
             //if the expression is empty, but the term is full, return the turn
             this.result = this.term
-           
+            return this.term
         }else{
             //else actually do the non pemdas math
             console.log("Evaluating: " + String(this.getExpressionString()))
@@ -110,7 +110,7 @@ let calculator = {
             }
             console.log(this.getExpressionString())
             console.log(`${this.getExpressionString()} = ${total}`)
-            this.result = total.toFixed(.6)
+            this.result = total.toFixed(6)
 
             
         }
@@ -159,7 +159,20 @@ for (let key of keypad){
             display.value = calculator.addArg(key.dataset.value)
         })
     }
+
+    key.addEventListener("click", ()=>{
+        display.dispatchEvent(input)
+    })
+
 }
+
+
+const resultsDisplay = document.getElementById("results")
+display.addEventListener("input",()=>{
+    // calculator.evaluate()
+    resultsDisplay.innerText=calculator.evaluate()
+
+})
 
 
 const enter = document.getElementsByClassName("enter")[0]
