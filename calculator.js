@@ -33,10 +33,6 @@ const input = new Event('input', {
     cancelable: true,
 })
 
-const calculatorContainer = document.getElementById("calculator")
-//get all buttons of the calculator
-const keypad = getLeafNodes(calculatorContainer)
-
 //calculator object
 let calculator = {
     expression: [], //used to store the expression in the form [term, operator, term, operator]
@@ -49,8 +45,13 @@ let calculator = {
         //check if the new thing to be added is an operator
         if(arg === "+" || arg === "-" || arg === "*" || arg === "/"){
             if(this.term===""){
-            //if it is an operator and term is "", this means that the previous term must be either empty
-            //or an operator. in any case we don't want double operators so replace it.
+                //if previous operator was the same tell user
+                if (this.expression[this.expression.length-1] === arg){
+                    alert("No double operators")
+                }
+
+                //if it is an operator and term is "", this means that the previous term must be either empty
+                //or an operator. in any case we don't want double operators so replace it.
                 this.expression.pop()
                 this.expression.push(arg)
             }else{
@@ -67,21 +68,34 @@ let calculator = {
         return this.getExpressionString()
     },
     back(){
+        if (this.expression.length === 0 && this.term.length === 0){
+            return ""
+        }
+
         if (this.term == ""){
+            //if the term is empty,
+            //remove the last operator and pop the previous term into the current term
             console.log("Popping arg: " + String(this.expression.slice(-1)))
             this.expression.pop()
-            this.term = this.expression.slice(-1)
+            this.term = this.expression.pop()
         } else{
             console.log("Popping arg: " + String(this.term.slice(-1)))
             this.term = this.term.slice(0,-1)
         }
-
+        console.log("Term: " + this.term)
         return this.getExpressionString()
     },    
     evaluate(){
+        //if no term is supplied prompt the user 
         if (this.term ==""){
             alert("missing last value")
-        } else{
+            return ""
+        } else if(this.expression.length == 0){
+            //if the expression is empty, but the term is full, return the turn
+            this.result = this.term
+           
+        }else{
+            //else actually do the non pemdas math
             console.log("Evaluating: " + String(this.getExpressionString()))
             let arr = this.expression.slice()
             arr.push(this.term)
@@ -98,8 +112,10 @@ let calculator = {
             console.log(`${this.getExpressionString()} = ${total}`)
             this.result = total.toFixed(.6)
 
-            return this.result
+            
         }
+        
+        return this.result
     },
     
 }
@@ -132,7 +148,9 @@ function operate(op1, oper, op2){
 }
 
 const display = document.getElementById("expression-display")
-
+const calculatorContainer = document.getElementById("calculator")
+//get all buttons of the calculator
+const keypad = getLeafNodes(calculatorContainer)
 //create on click listeners for all buttons on the calculator that have a value attribute
 for (let key of keypad){
     if(key.dataset.value){
