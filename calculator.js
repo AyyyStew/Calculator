@@ -43,6 +43,7 @@ let calculator = {
         return this.expression
     },
     back(){
+        if(this.expression.length === 0){return}
         this.expression=this.expression.slice(0,-1)
     },    
     evaluate(){
@@ -107,18 +108,29 @@ let calculator = {
             return value
         }
 
-        const chunk = chunkExpression(this.expression)
+        //if expression is empty return nothing
+        if (this.expression === ""){
+            return ""
+        }
+
+        const chunks = chunkExpression(this.expression)
+        
+        let total = chunks[0]
+        //if the first chunk is "" it meas an operation was entered first.
+        //that is invalid so give the user an error
+        if (total === ""){
+            return "ERROR";
+        }
 
         //go through each chuck and perferm operations on it
-        let total = chunk[0]
-        for(let i = 1; i< chunk.length; i=i+2){
-            if(chunk[i+1] === ""){
+        for(let i = 1; i< chunks.length; i=i+2){
+            if(chunks[i+1] === ""){
                 //if at any point our chunked epxression has an empty string as the operand, 
                 //we know that the user has entered too many operators
                 return "ERROR"
             }
 
-            total = operate(total, chunk[i], chunk[i+1])
+            total = operate(total, chunks[i], chunks[i+1])
         }
 
         return total
