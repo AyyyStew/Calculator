@@ -70,9 +70,7 @@ let calculator = {
     back(){
         if (this.expression.length === 0 && this.term.length === 0){
             return ""
-        }
-
-        if (this.term == ""){
+        } else if (this.term == ""){
             //if the term is empty,
             //remove the last operator and pop the previous term into the current term
             console.log("Popping arg: " + String(this.expression.slice(-1)))
@@ -82,16 +80,16 @@ let calculator = {
             console.log("Popping arg: " + String(this.term.slice(-1)))
             this.term = this.term.slice(0,-1)
         }
+        // this.evaluate()
         console.log("Term: " + this.term)
         return this.getExpressionString()
     },    
     evaluate(){
         //if no term is supplied prompt the user 
         if (this.term ==""){
-            // alert("missing last value")
             return "\xa0" //this is nbsp in html. just here so the div doesn't collapse. i know its not ecapsulate but eh
         } else if(this.expression.length == 0){
-            //if the expression is empty, but the term is full, return the turn
+            //if the expression is empty, but the term is full, return the tern
             this.result = this.term
             return this.term
         }else{
@@ -137,7 +135,7 @@ function operate(op1, oper, op2){
 
         case "/":
             if (op2 == 0){
-                value == undefined
+                value = undefined
             }else{
             value = op1 / op2
             }
@@ -157,12 +155,13 @@ for (let key of keypad){
         key.addEventListener("click", (e) =>{
             console.log("Button Pressed: " + key.dataset.value)
             display.value = calculator.addArg(key.dataset.value)
+            // display.dispatchEvent(input)
         })
     }
-
     key.addEventListener("click", ()=>{
-        display.dispatchEvent(input)
+    display.dispatchEvent(input)
     })
+
 
 }
 
@@ -189,4 +188,5 @@ enter.addEventListener("click", ()=>{
 const undo = document.getElementById("undo")
 undo.addEventListener("click", ()=>{
     display.value = calculator.back()
+    display.dispatchEvent(input)
 })
